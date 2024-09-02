@@ -8,7 +8,22 @@ Leaves are the organs necessary for carbon assimilation and transpiration by pla
 ### Hardware
 We use a Raspberry Pi computer (3,4 or 5) combined with the RPi High Quality camera and a 180° fisheye lens from Arducam. The total setup approaches 150€ but price depends strongly on the raspberry pi model used.
 
-## Web app Software
+### Web app Software
 A simple flask web app is used to control the raspberry pi camera from a phone or other device. From the webapp it is possible to set the prefix of the next series of images that will be taken. The app dyanmically displays the last image taken on the page as well as local time.
 
-## Other requirements
+### Setup the RPi
+My advice is to install the [raspbian lite os](https://www.raspberrypi.com/software/operating-systems/) to avoid wasting resources on a desktop when we only need to be able to display stuff on the webapp.
+First download this repository in the folder of your choice. Then inside the repository folder create a pictures directory. This will be used to store the hemispherical photographies that you take. 
+```shell
+git clone https://github.com/ivancornut/Cano-pi-imager
+cd Cano-pi-imager
+mkdir pictures
+```
+Then install the python package flask:
+```shell
+sudo apt install python3-flask
+```
+Finally simply run the app:
+```shell
+python3 app.py
+```
