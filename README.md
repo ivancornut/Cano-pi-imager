@@ -12,6 +12,7 @@ We use a Raspberry Pi computer (3,4 or 5) combined with the RPi High Quality cam
 A simple flask web app is used to control the raspberry pi camera from a phone or other device. From the webapp it is possible to set the prefix of the next series of images that will be taken. The app dyanmically displays the last image taken on the page as well as local time.
 
 ### Setup the RPi
+#### Simple one-time setup to test the app
 My advice is to install the [raspbian lite os](https://www.raspberrypi.com/software/operating-systems/) to avoid wasting resources on a desktop when we only need to be able to display stuff on the webapp.
 First download this repository in the folder of your choice. Then inside the repository folder create a pictures directory. This will be used to store the hemispherical photographies that you take. 
 ```shell
@@ -27,3 +28,5 @@ Finally simply run the app:
 ```shell
 python3 app.py
 ```
+#### Setup for use in the field
+First we need to setup the app so it starts automatically on startup of the raspberry pi. For that we are going to stay simple and just use cron. 
