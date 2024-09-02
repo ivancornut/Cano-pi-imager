@@ -29,4 +29,22 @@ Finally simply run the app:
 python3 app.py
 ```
 #### Setup for use in the field
-First we need to setup the app so it starts automatically on startup of the raspberry pi. For that we are going to stay simple and just use cron. 
+First we need to setup the app so it starts automatically on startup of the raspberry pi. For that we are going to stay simple and just use cron.
+First we make the launch script executable by changing rights:
+```shell
+chmod 775 launcher.sh
+```
+Then we create a logs directory for crontab logs
+```shell
+cd /home/pi
+mkdir logs
+```
+Then we open the crontabl config file
+```shell
+sudo crontab -e
+```
+And we fill in the following line:
+```shell
+@reboot sh /home/pi/Documents/Cano-pi-imager/launcher.sh >/home/pi/logs/cronlog 2>&1
+```
+Then the script should run at each startup. 
