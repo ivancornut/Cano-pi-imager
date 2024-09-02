@@ -29,7 +29,7 @@ Finally simply run the app:
 python3 app.py
 ```
 #### Setup for use in the field
-First we need to setup the app so it starts automatically on startup of the raspberry pi. For that we are going to stay simple and just use cron.
+First we need to setup the app so it starts automatically on startup of the raspberry pi. For that we are going to stay simple and just use cron. I used inspiration from this good tutorial: [https://www.instructables.com/Raspberry-Pi-Launch-Python-script-on-startup/](https://www.instructables.com/Raspberry-Pi-Launch-Python-script-on-startup/)
 First we make the launch script executable by changing rights:
 ```shell
 chmod 775 launcher.sh
