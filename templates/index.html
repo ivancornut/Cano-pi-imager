@@ -5,29 +5,30 @@
 		<title>{{ title }}</title>
 	</head>
 	<body>
-		<h1> Hemispherical photography webapp</h1>
-		<h2> The date and time of the server are {{ time }}</h2>
-		<h3> 
-			Green LED control for testing purposes
-			<a href="/Green-led/on" class="button">TURN ON</a>  
-			<a href="/Green-led/off"class="button">TURN OFF</a>
-			
-		</h3>
+		<h1> Cano-pi-imager </h1>
+		<h2> {{ time }} </h2>
 		
-		<h3> The current ID of the future pictures will be: {{ current_id }}
-		</h3>
+		<div>
+			<a href="/Green-led/on" class="button">Green Led ON</a>  
+			<a href="/Green-led/off"class="button">Green Led OFF</a>
+		</div>
 		
-		<h3> 
-			Camera control
-			<a href="/Camera/take" class="button">Acquire hemisph image</a>  
-		</h3>
+		<h2> 
+			Current ID: 
+			<br>
+			{{ current_id }}
+		</h2>
 		
 		<form method="POST"> 
-        <textarea name="textarea"></textarea> 
-        <input type="submit" value="Change current ID"> 
+			<textarea name="textarea" class = "id_bttn"></textarea>
+			<br>
+			<input type="submit" value="Change current ID" class = "id_bttn"> 
 		</form> 
 		
+		<a href="/Camera/take" class="take_button">Acquire</a>  
+
 		<h2> {{ picture }}</h2>
-		<img src={{ ImageLink }} alt="Picture"> 
+		<img src={{ ImageLink }} class = "disp_img" alt="Picture"> 
+	
 	</body>
 </html>
