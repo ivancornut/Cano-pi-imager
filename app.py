@@ -66,6 +66,6 @@ def action(deviceName, action):
 	return redirect('/') # go back to main page
 
 if __name__ == '__main__':
-	app.run(debug = False, host='0.0.0.0', port = 5000) # 80 for direct http access
+	app.run(debug = False, host='0.0.0.0', port = 80) # 80 for direct http access
 
 
