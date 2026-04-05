@@ -92,6 +92,8 @@ def capture_exposure_preview():
 		picam2.set_controls({"AeEnable": False,
 			"ExposureTime": exposure['ExposureTime'],
 			"AnalogueGain": exposure['AnalogueGain']})
+	else:
+		picam2.set_controls({"AeEnable": True})
 	time.sleep(2) # let exposure settle
 	picam2.capture_file("static/pictures/temp.jpeg")
 	metadata = picam2.capture_metadata()
