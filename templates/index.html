@@ -25,7 +25,14 @@
 			<input type="submit" value="Change current ID" class = "id_bttn"> 
 		</form> 
 		
-		<a href="/Camera/take" class="take_button">Acquire</a>  
+		<h2>Exposure: {{ exposure_info }}</h2>
+		<div>
+			<a href="/exposure/decrease" class="button">Exposure -</a>
+			<a href="/exposure/auto" class="button">Auto Expose</a>
+			<a href="/exposure/increase" class="button">Exposure +</a>
+		</div>
+
+		<a href="/Camera/take" class="take_button">Acquire</a>
 
 		<h2> {{ picture }}</h2>
 		<img src={{ ImageLink }} class = "disp_img" alt="Picture"> 

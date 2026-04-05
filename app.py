@@ -18,21 +18,28 @@ pic = {'image_link':"static/pictures/example.jpeg",
 
 status = {'Current_data_id':'Farmer-Bloc-Trat-ID'}
 
+# exposure settings: None means auto, otherwise manual
+exposure = {'ExposureTime': None, 'AnalogueGain': None}
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
 	# Main page
 	timeString = time.strftime("%Y-%m-%d %H:%M") # display currenttime on mainpage
+	if exposure['ExposureTime'] is None:
+		exp_str = "Auto"
+	else:
+		exp_str = str(exposure['ExposureTime']) + " us, gain " + str(round(exposure['AnalogueGain'], 1))
 	templateData = {'title' : 'Camera', 'time': timeString,
 	'picture':pic['picture_string'], 'ImageLink':pic['image_link'],
-	'current_id':status['Current_data_id']}
-	
-	if request.method == 'POST': 
-		# Retrieve the text from the textarea 
-		status['Current_data_id'] = request.form.get('textarea') 
-		# Print the text in terminal for verification 
+	'current_id':status['Current_data_id'], 'exposure_info': exp_str}
+
+	if request.method == 'POST':
+		# Retrieve the text from the textarea
+		status['Current_data_id'] = request.form.get('textarea')
+		# Print the text in terminal for verification
 		print(status['Current_data_id'])
 		return redirect('/')
-	
+
 	return render_template('index.html', **templateData)
 	
 @app.route('/<deviceName>/<action>')
@@ -53,17 +60,76 @@ def action(deviceName, action):
 			# start with main configuration
 			picam2.configure(main_cam_config)
 			picam2.start()
-			dt = time.strftime("%d-%m-%y_%H-%M-%S") # get current RPi time 
+			# apply manual exposure if set
+			if exposure['ExposureTime'] is not None:
+				picam2.set_controls({"AeEnable": False,
+					"ExposureTime": exposure['ExposureTime'],
+					"AnalogueGain": exposure['AnalogueGain']})
+			time.sleep(2) # let exposure settle
+			dt = time.strftime("%d-%m-%y_%H-%M-%S") # get current RPi time
 			picam2.capture_file("pictures/hemisph_"+status['Current_data_id']+"_"+dt+".jpeg") # capture full resolution file
 			picam2.switch_mode(disp_cam_config) # switch to lores for display on webpage
+			if exposure['ExposureTime'] is not None:
+				picam2.set_controls({"AeEnable": False,
+					"ExposureTime": exposure['ExposureTime'],
+					"AnalogueGain": exposure['AnalogueGain']})
+				time.sleep(2)
 			picam2.capture_file("static/pictures/temp.jpeg") # capture lores file for preview
 			picam2.stop()
-			
+
 			pic['image_link'] = "static/pictures/temp.jpeg" # link so main page can display image
-			pic['picture_string'] = "Acquired picture at: " + dt 
-			
+			pic['picture_string'] = "Acquired picture at: " + dt
+
 			led.off() # turn off red led
 	return redirect('/') # go back to main page
+
+def capture_exposure_preview():
+	"""Capture a low-res preview with current exposure settings and update pic dict."""
+	disp_cam_config = picam2.create_still_configuration(main={"size":(640,480)})
+	picam2.configure(disp_cam_config)
+	picam2.start()
+	if exposure['ExposureTime'] is not None:
+		picam2.set_controls({"AeEnable": False,
+			"ExposureTime": exposure['ExposureTime'],
+			"AnalogueGain": exposure['AnalogueGain']})
+	time.sleep(2) # let exposure settle
+	picam2.capture_file("static/pictures/temp.jpeg")
+	metadata = picam2.capture_metadata()
+	picam2.stop()
+	pic['image_link'] = "static/pictures/temp.jpeg"
+	return metadata
+
+@app.route('/exposure/auto')
+def exposure_auto():
+	"""Take a preview with auto exposure and store the resulting settings."""
+	exposure['ExposureTime'] = None
+	exposure['AnalogueGain'] = None
+	metadata = capture_exposure_preview()
+	# extract auto exposure result and store for future manual use
+	exposure['ExposureTime'] = metadata['ExposureTime']
+	exposure['AnalogueGain'] = metadata['AnalogueGain']
+	pic['picture_string'] = "Auto exposure: " + str(exposure['ExposureTime']) + " us"
+	return redirect('/')
+
+@app.route('/exposure/increase')
+def exposure_increase():
+	"""Double the exposure time (1 stop brighter)."""
+	if exposure['ExposureTime'] is None:
+		return redirect('/exposure/auto')
+	exposure['ExposureTime'] = min(exposure['ExposureTime'] * 2, 200000000) # cap at 200s
+	capture_exposure_preview()
+	pic['picture_string'] = "Exposure: " + str(exposure['ExposureTime']) + " us"
+	return redirect('/')
+
+@app.route('/exposure/decrease')
+def exposure_decrease():
+	"""Halve the exposure time (1 stop darker)."""
+	if exposure['ExposureTime'] is None:
+		return redirect('/exposure/auto')
+	exposure['ExposureTime'] = max(exposure['ExposureTime'] // 2, 1) # min 1 us
+	capture_exposure_preview()
+	pic['picture_string'] = "Exposure: " + str(exposure['ExposureTime']) + " us"
+	return redirect('/')
 
 if __name__ == '__main__':
 	app.run(debug = False, host='0.0.0.0', port = 80) # 80 for direct http access
