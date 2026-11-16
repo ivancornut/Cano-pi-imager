@@ -7,8 +7,7 @@ import re
 import threading
 import time
 
-green_led = LED(27)
-red_led = LED(22)
+red_led = LED(22) # lit while a picture is being acquired
 
 picam2 = Picamera2()
 
@@ -146,26 +145,18 @@ def index():
 
 	return render_template('index.html', **templateData)
 
-@app.route('/<deviceName>/<action>')
-def action(deviceName, action):
-	if deviceName == 'Green-led':
-		led = green_led
-		if action == 'on':
-			led.on()
-		elif action == 'off':
-			led.off()
-	if deviceName == 'Camera':
-		if action == 'take':
-			def take():
-				red_led.on() # turn on red led
-				try:
-					dt = time.strftime("%d-%m-%y_%H-%M-%S") # get current RPi time
-					path = os.path.join(PICTURES_DIR, "hemisph_" + status['Current_data_id'] + "_" + dt + ".jpeg")
-					capture(save_path=path) # full resolution file + previews from the same frame
-					pic['picture_string'] = "Acquired picture at: " + dt
-				finally:
-					red_led.off() # turn off red led
-			run_camera(take)
+@app.route('/Camera/take')
+def take_picture():
+	def take():
+		red_led.on() # turn on red led while acquiring
+		try:
+			dt = time.strftime("%d-%m-%y_%H-%M-%S") # get current RPi time
+			path = os.path.join(PICTURES_DIR, "hemisph_" + status['Current_data_id'] + "_" + dt + ".jpeg")
+			capture(save_path=path) # full resolution file + previews from the same frame
+			pic['picture_string'] = "Acquired picture at: " + dt
+		finally:
+			red_led.off() # turn off red led
+	run_camera(take)
 	return redirect('/') # go back to main page
 
 def set_exposure_steps(steps):
