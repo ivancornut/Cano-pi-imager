@@ -40,8 +40,8 @@ div{
   display: flex;
   justify-content: center;
   align-items: center;
-  font: bold 7vh Arial;
-  height: 10vh;
+  font: bold 4vh Arial;
+  height: 6vh;
   text-decoration: none;
   background-color: #EEEEEE;
   color: #333333;
@@ -54,6 +54,30 @@ div{
   border-left: 1px solid #CCCCCC;
 }
 
+.exp_button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex: 1;
+  font: bold 4.5vh Arial;
+  min-height: 9vh;
+  text-decoration: none;
+  text-align: center;
+  background-color: #EEEEEE;
+  color: #333333;
+  padding: 1vh 2vw;
+  border-top: 1px solid #CCCCCC;
+  border-right: 1px solid #333333;
+  border-bottom: 1px solid #333333;
+  border-left: 1px solid #CCCCCC;
+  margin: 1vw;
+}
+
+.exp_button small {
+  font: bold 1.8vh Arial;
+}
+
 .id_bttn{
   font: bold 2.5vh Arial;
   display: flex;
@@ -64,9 +88,29 @@ div{
 }
 
 
+.preview{
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 2vw;
+}
+
 .disp_img{
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 75%;
+  width: 60%;
+  min-width: 280px;
+}
+
+.focus{
+  margin: 0;
+  width: 30%;
+  min-width: 180px;
+  font: bold 2vh Arial;
+  text-align: center;
+}
+
+.focus_img{
+  display: block;
+  width: 100%;
+  border: 2px solid #333333;
+  image-rendering: pixelated;
 }
